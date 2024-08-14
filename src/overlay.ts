@@ -146,14 +146,30 @@ function createOverlaySvg(stage: StageDefinition): SVGSVGElement {
 }
 
 function generateStageSvgPathString(stage: StageDefinition) {
+  let zoom = 1;
+  if(window.devicePixelRatio){
+    switch(window.devicePixelRatio){
+      case 1.25:{
+        zoom = 0.8;
+        break
+      }
+      case 1.5:{
+        zoom=0.75
+        break
+      }
+      default:{
+        zoom = 1
+      }
+    }
+  }
   const windowX = window.innerWidth;
   const windowY = window.innerHeight;
 
   const stagePadding = getConfig("stagePadding") || 0;
   const stageRadius = getConfig("stageRadius") || 0;
 
-  const stageWidth = stage.width + stagePadding * 2;
-  const stageHeight = stage.height + stagePadding * 2;
+  const stageWidth = stage.width * zoom + stagePadding * 2;
+  const stageHeight = stage.height* zoom + stagePadding * 2;
 
   // prevent glitches when stage is too small for radius
   const limitedRadius = Math.min(stageRadius, stageWidth / 2, stageHeight / 2);
@@ -161,8 +177,8 @@ function generateStageSvgPathString(stage: StageDefinition) {
   // no value below 0 allowed + round down
   const normalizedRadius = Math.floor(Math.max(limitedRadius, 0));
 
-  const highlightBoxX = stage.x - stagePadding + normalizedRadius;
-  const highlightBoxY = stage.y - stagePadding;
+  const highlightBoxX = stage.x* zoom - stagePadding + normalizedRadius;
+  const highlightBoxY = stage.y * zoom - stagePadding;
   const highlightBoxWidth = stageWidth - normalizedRadius * 2;
   const highlightBoxHeight = stageHeight - normalizedRadius * 2;
 
